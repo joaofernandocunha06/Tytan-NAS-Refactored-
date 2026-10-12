@@ -1,0 +1,575 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap");
+
+* {
+  box-sizing: border-box;
+  }
+
+html {
+min-height: 100%;
+}
+
+body {
+margin: 0;
+min-height: 100vh;
+font-family: "Anton", sans-serif;
+color: #f8f6ee;
+
+
+background:
+    radial-gradient(circle at 15% 10%, #243d70 0%, transparent 35%),
+    radial-gradient(circle at 85% 80%, #172c55 0%, transparent 40%),
+    #0a1026;
+
+background-attachment: fixed;
+background-repeat: no-repeat;
+
+
+}
+
+/* =========================
+TÍTULO
+========================= */
+
+body > div:first-child {
+padding: 20px 25px 5px;
+}
+
+body h1 {
+margin: 0;
+font-family: "Bebas Neue", sans-serif;
+font-size: clamp(32px, 5vw, 60px);
+letter-spacing: 2px;
+}
+
+/* =========================
+ÁREAS PRINCIPAIS
+========================= */
+
+.header,
+#container-disks,
+#container-data {
+margin: 12px !important;
+
+
+background: rgba(16, 29, 58, 0.92);
+
+border: 2px solid #deb06a;
+border-radius: 20px;
+
+box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.25);
+
+
+}
+
+/* =========================
+HEADER
+========================= */
+
+.header {
+position: sticky;
+top: 10px;
+z-index: 10;
+
+
+padding: 4px;
+
+
+}
+
+#container-commands {
+border: 0 !important;
+border-radius: 16px !important;
+}
+
+.header-row {
+width: 100%;
+
+
+display: flex;
+flex-direction: row;
+
+justify-content: center;
+align-items: center;
+
+gap: 10px;
+
+padding: 8px;
+
+flex-wrap: wrap;
+
+
+}
+
+/* =========================
+BOTÕES
+========================= */
+
+.button-bounce {
+position: relative;
+overflow: hidden;
+z-index: 0;
+
+
+min-height: 42px;
+
+padding: 8px 18px;
+
+border: 0;
+border-radius: 10px;
+
+background-color: #deb06a;
+color: #17172b;
+
+font-family: "Anton", sans-serif;
+font-size: 16px;
+letter-spacing: 0.5px;
+
+cursor: pointer;
+
+transition:
+    transform 0.2s ease,
+    color 0.3s ease,
+    box-shadow 0.2s ease;
+
+
+}
+
+.button-bounce::before {
+content: "";
+
+
+position: absolute;
+z-index: -1;
+
+inset: 0;
+
+background: #3498db;
+
+transform: scaleY(0);
+transform-origin: 50% 0;
+
+transition: transform 0.3s ease-out;
+
+
+}
+
+.button-bounce:hover::before {
+transform: scaleY(1);
+
+
+transition-timing-function:
+    cubic-bezier(.52, 1.64, .37, 1.66);
+
+
+}
+
+.button-bounce:hover {
+color: white;
+
+
+transform: translateY(-2px);
+
+box-shadow:
+    0 5px 15px rgba(52, 152, 219, 0.3);
+
+
+}
+
+.button-bounce:active {
+transform: translateY(1px);
+}
+
+/* =========================
+INPUTS
+========================= */
+
+.header-row input {
+min-height: 42px;
+
+
+padding: 8px 12px;
+
+border: 2px solid #deb06a !important;
+border-radius: 10px;
+
+background: #101d3a;
+color: white;
+
+font-family: "Anton", sans-serif;
+font-size: 15px;
+
+outline: none;
+
+transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+
+
+}
+
+.header-row input:focus {
+border-color: #3498db !important;
+
+
+box-shadow:
+    0 0 0 3px rgba(52, 152, 219, 0.2);
+
+
+}
+
+.header-row input[type="file"] {
+max-width: 320px;
+}
+
+/* =========================
+DISCOS
+========================= */
+
+#container-disks {
+display: flex;
+
+
+flex-wrap: wrap;
+justify-content: center;
+
+gap: 10px;
+
+padding: 15px !important;
+
+
+}
+
+#container-disks div {
+margin: 0 !important;
+}
+
+#container-disks button {
+padding: 12px 22px;
+
+
+border: 2px solid #deb06a;
+border-radius: 12px;
+
+background: #182b52;
+color: #f8f6ee;
+
+font-family: "Anton", sans-serif;
+font-size: 17px;
+
+cursor: pointer;
+
+transition:
+    background 0.2s,
+    transform 0.2s,
+    border-color 0.2s;
+
+
+}
+
+#container-disks button:hover {
+background: #254a7a;
+
+
+border-color: #3498db;
+
+transform: translateY(-2px);
+
+
+}
+
+/* =========================
+CONTEÚDO
+========================= */
+
+.container-content {
+display: grid !important;
+
+
+grid-template-columns: 1fr !important;
+
+justify-items: center;
+
+gap: 18px;
+
+padding: 18px !important;
+
+
+}
+
+/* =========================
+CARTÕES
+========================= */
+
+.container-content > div {
+width: 100%;
+max-width: 330px;
+
+
+display: flex;
+
+flex-direction: column;
+align-items: center;
+
+gap: 8px;
+
+
+}
+
+/* =========================
+PASTAS
+========================= */
+
+.folder-obj {
+width: 100%;
+aspect-ratio: 1 / 1;
+
+
+overflow: hidden;
+
+padding: 20px;
+
+border: 2px solid #deb06a;
+border-radius: 18px;
+
+background:
+    linear-gradient(
+        145deg,
+        #deb06a,
+        #b98642
+    );
+
+color: #17172b;
+
+font-family: "Anton", sans-serif;
+font-size: clamp(18px, 2vw, 25px);
+
+white-space: nowrap;
+text-overflow: ellipsis;
+
+cursor: pointer;
+
+box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.2);
+
+transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+
+}
+
+.folder-obj:hover {
+transform: translateY(-5px);
+
+
+box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.35);
+
+
+}
+
+/* =========================
+IMAGENS
+========================= */
+
+.img-obj {
+width: 100%;
+aspect-ratio: 1 / 1;
+
+
+object-fit: contain;
+
+padding: 8px;
+
+background: #101d3a;
+
+border: 2px solid #254a7a;
+border-radius: 18px;
+
+transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+
+
+}
+
+.img-obj:hover {
+transform: translateY(-5px);
+
+
+border-color: #deb06a;
+
+
+}
+
+/* =========================
+ARQUIVOS
+========================= */
+
+.file-obj {
+width: 100%;
+aspect-ratio: 1 / 1;
+
+
+display: flex;
+
+justify-content: center;
+align-items: center;
+
+padding: 20px;
+
+border: 2px solid #254a7a;
+border-radius: 18px;
+
+background:
+    linear-gradient(
+        145deg,
+        #182b52,
+        #101d3a
+    );
+
+color: #f8f6ee;
+
+cursor: pointer;
+
+transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+
+}
+
+.file-obj:hover {
+transform: translateY(-5px);
+
+
+border-color: #deb06a;
+
+box-shadow:
+    0 12px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* =========================
+TEXTO DOS ARQUIVOS
+========================= */
+
+.text {
+width: 100%;
+
+
+overflow: hidden;
+
+white-space: nowrap;
+text-overflow: ellipsis;
+
+text-align: center;
+
+color: #f8f6ee;
+
+font-family: "Anton", sans-serif;
+font-size: clamp(18px, 2vw, 24px);
+
+
+}
+
+/* =========================
+BOTÃO BAIXAR
+========================= */
+
+#button-download {
+width: 100%;
+
+
+padding: 9px;
+
+border: 0;
+border-radius: 10px;
+
+background: #deb06a;
+color: #17172b;
+
+font-family: "Anton", sans-serif;
+font-size: 15px;
+
+cursor: pointer;
+
+transition:
+    background 0.2s,
+    transform 0.2s;
+
+
+}
+
+#button-download:hover {
+background: #3498db;
+color: white;
+
+
+transform: translateY(-2px);
+
+
+}
+
+/* =========================
+RESPONSIVIDADE
+========================= */
+
+@media (min-width: 300px) {
+
+
+.container-content {
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr)) !important;
+}
+
+
+}
+
+@media (min-width: 700px) {
+
+
+.container-content {
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1100px) {
+
+
+.container-content {
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 600px) {
+
+
+.header {
+    position: relative;
+    top: 0;
+}
+
+.header-row {
+    flex-direction: column;
+}
+
+.header-row button,
+.header-row input {
+    width: min(100%, 320px);
+}
+
+.container-content {
+    gap: 12px;
+    padding: 12px !important;
+}
+
+.container-content > div {
+    max-width: 220px;
+}
+
+
+}

@@ -1,0 +1,264 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tytan NAS</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
+    </head>
+    
+    <body>
+    
+            <div>
+                <h1 style="color: white;">Tytan NAS</h1>
+            </div>
+
+            <header class="header" style="margin: 12px;">
+                <div style="border: 4px solid #deb06a; border-radius: 20px;" id="container-commands">
+                    <div class="header-row">
+                        <button class="button-bounce" id="button-load-disks">LISTAR</button>
+                        <button class="button-bounce" id="button-go-back">VOLTAR</button>
+                        <button class="button-bounce" id="button-reload">RECARREGAR</button>
+                    </div>
+                    <div class="header-row">
+                        <input type="file" multiple="true" style="border: 2px solid #deb06a; border-radius: 10px;" id="input-file-id">
+                        <button class="button-bounce" id="button-send-file">ENVIAR</button>
+                    </div>
+                    <div class="header-row">
+                        <input type="text" id="input-dir-id">
+                        <button class="button-bounce" id="button-make-dir">CRIAR</button>
+                     </div>
+                </div>
+            </header>
+
+            <div style="background-color: #024d60; padding: 5px; margin: 12px; border: 4px solid #deb06a; border-radius: 20px;"" id="container-disks">
+            </div>
+
+            <div style="background-color: #024d60; padding: 5px; margin: 12px; border: 4px solid #deb06a; border-radius: 20px;" class="container-content" id="container-data">
+            </div>
+
+            <script>
+                const container_data = document.getElementById("container-data");
+                const container_disks = document.getElementById("container-disks");
+                const container_commands = document.getElementById("container-commands");
+
+                history_list = [];
+                extension_list = [".jpg", ".png", ".jpeg", ".webp", ".svg", ".bmp"];
+
+                container_commands.addEventListener("click", (event) => {
+                    switch(event.target.id){
+                        
+                        case "button-load-disks":
+                            fetch('/disc-listing')
+                            .then(respose => respose.json())
+                            .then(data => {
+
+                                //LIMPA A TELA ANTES DE RECARREGAR
+                                container_disks.innerHTML = "";
+
+                                data.forEach(disk => {
+                                    const div = document.createElement("div");
+                                    div.style.margin = "10px";
+
+                                    // estes são os elementos que vão ser os botões dos discos
+                                    div.innerHTML = 
+                                    `<button style="margin: 10px" data-path="${disk.path}" data-free="${disk.free}" data-total="${disk.total}">
+                                        disco: "${disk.name}"
+                                    </button>`;
+                                    
+                                    container_disks.appendChild(div);
+                                });
+                            })
+                            break;
+                        
+                        case "button-go-back":
+                            if (history_list.length > 1){
+                                history_list.pop();
+                                content_request(history_list[history_list.length - 1]);
+                            }
+                            break;
+                        
+                        case "button-reload":
+                            if (history_list.length != 0){
+                                content_request(history_list[history_list.length - 1]);
+                            }
+                            break;
+                        
+                        case "button-send-file":
+                            if (history_list.length <= 1){
+                                alert("nenhum diretório aberto");
+                            }
+                            else{
+                                const input_ref = document.getElementById("input-file-id");
+                                upload_file(input_ref);
+                            }
+                            break;
+                        
+                        case "button-make-dir":
+                            if (history_list.length != 0){
+                                const input_dir_value = document.getElementById("input-dir-id").value;
+                                make_dir(input_dir_value, history_list[history_list.length - 1]);
+                                content_request(history_list[history_list.length - 1]);
+                            }
+                            break;  
+                    }
+                });
+
+                // --------------------------- CONTAINER DISK LISTENER ----------------------
+                // isso é responsável pelo div que vai ter os discos listados
+                container_disks.addEventListener('click', (event) => {
+                    if (event.target.tagName === 'BUTTON') {
+                        history_list = []
+                        
+                        const itemPath = event.target.dataset.path;
+                        //const itemFree = event.target.dataset.free;
+                        //const itemTotal = event.target.dataset.total;
+
+                        history_list.push(itemPath);
+                        content_request(itemPath);
+                    }
+                })
+                //---------------------------- CONTAINER DATA LISTENER ----------------------
+                // responsável pelo div que tem todos os dados do disco
+                container_data.addEventListener('click', (event) => {
+
+                    const folder = event.target.closest(".folder-obj");
+
+                    if (!folder) {
+                        return;
+                    }
+
+                    const itemPath = folder.dataset.id;
+
+                    history_list.push(itemPath);
+                    content_request(itemPath);
+                      
+                    // ----- ANTIGO -----
+                    //const itemPath = event.target.dataset.id;
+                    //const itemFree = event.target.dataset.free;
+                    //const itemTotal = event.target.dataset.total;
+                    history_list.push(itemPath);
+                    content_request(itemPath);
+                    
+                    //const input_ref = document.getElementById("input-id");
+                    //upload_file(input_ref);
+                })
+                // ------------------------------- CONTENT REQUEST --------------------------
+                function content_request(path){
+                    fetch("/trigger-content-request", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            path: path
+                        })
+                    })
+                    .then(respose => respose.json())
+                    .then(data => {
+                        //LIMPA A TELA ANTES DE RECARREGAR
+                        container_data.innerHTML = "";
+
+                        /*
+                        const input_file = document.createElement("input");
+
+                        input_file.type = "file";
+                        input_file.id = "input-id";
+                        input_file.multiple = true;
+                        */
+
+                        /*
+                        const button_upload_file = document.createElement("button");
+
+                        button_upload_file.id = "button-send-file";
+                        button_upload_file.textContent = "ENVIAR";
+                        
+                        container_data.appendChild(input_file);
+                        container_data.appendChild(button_upload_file);
+                        */
+
+                        data.forEach(item => {
+                            const div = document.createElement("div");
+
+                            if (item.type === "folder"){
+                                div.innerHTML = 
+                                `<button class="folder-obj" style="z-index: 0;", data-type="${item.type}", data-id="${item.id}">
+                                    ${item.name}
+                                </button>`;
+                            }
+
+                            else if (extension_list.includes(item.type)){
+                                div.innerHTML = 
+                                `<img class="img-obj" src="/request-picture?path=${item.id}">
+                                <button id="button-download">BAIXAR</button>
+                                `;
+                            }
+
+                            else
+                            {
+                                div.innerHTML = 
+                                `<div class="file-obj" data-type="${item.type}", data-id="${item.id}">
+                                    <span class="text" >${item.name}</span>
+                                    <button id="button-download">BAIXAR</button>
+                                </div>`;
+                            }
+
+                            container_data.appendChild(div);
+                        })
+                    })
+                }
+
+                // ---------------------------------- MAKE DIR ------------------------------
+                function make_dir(name_dir_ref, curr_dir_ref){
+                    const formData = new FormData();
+                    formData.append("name_dir", name_dir_ref);
+                    formData.append("curr_dir", curr_dir_ref);
+
+                    fetch("/trigger-make-dir", {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                    })
+                }
+
+                // -------------------------------- UPLOAD FILE -----------------------------
+                async function upload_file(input_ref) {
+                    if (input_ref.files.length === 0) {
+                        console.log("insira um arquivo primeiro")
+                    }
+                    else {
+                        const file = input_ref.files[0];
+                        const formData = new FormData();
+                        
+                        for(const file of input_ref.files){
+                            formData.append("data", file);
+                        }
+
+                        console.log(history_list[history_list.length - 1]);
+                        
+                        formData.append('path', history_list[history_list.length - 1]);
+                        
+                            
+                        const response = await fetch('/trigger-upload-file', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(
+                            data => {
+                                console.log(data);
+                            }
+                        )
+
+                        content_request(history_list[history_list.length - 1]);
+
+                    }
+                }
+            </script>
+    </body>
+</html>
